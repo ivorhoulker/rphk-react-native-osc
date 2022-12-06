@@ -1,7 +1,7 @@
 {
-  "name": "react-native-osc",
+  "name": "@rphk/react-native-osc",
   "title": "Open Sound Control for React Native",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Open Sound Control for React Native (iOS & Android).",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/luiscript/react-native-osc.git",
-    "baseUrl": "https://github.com/luiscript/react-native-osc"
+    "url": "git+https://github.com/ivorhoulker/rphk-react-native-osc.git",
+    "baseUrl": "https://github.com/ivorhoulker/rphk-react-native-osc"
   },
   "keywords": [
     "react-native",
