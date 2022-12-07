@@ -1,7 +1,7 @@
 {
   "name": "@rphk/react-native-osc",
   "title": "Open Sound Control for React Native",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "description": "Open Sound Control for React Native (iOS & Android).",
   "main": "index.js",
   "scripts": {

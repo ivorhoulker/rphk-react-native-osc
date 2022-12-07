@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2003-2014, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- *
- * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
- */
+// SPDX-FileCopyrightText: 2003-2017 C. Ramakrishnan / Illposed Software
+// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+//
+// SPDX-License-Identifier: BSD-3-Clause
 
 package com.illposed.osc;
 
-import java.nio.charset.Charset;
+import java.io.Serializable;
 
 /**
- * OSCPacket is the abstract superclass for the various
- * kinds of OSC Messages.
+ * An abstract superclass for messages and bundles.
  *
  * The actual packets are:
  * <ul>
@@ -21,24 +17,6 @@ import java.nio.charset.Charset;
  *   and/or made up of multiple messages
  * </ul>
  */
-public interface OSCPacket {
+public interface OSCPacket extends Serializable {
 
-	/**
-	 * Returns the character set used by this packet.
-	 * @return the character set used to encode message addresses and string
-	 *   arguments.
-	 */
-	Charset getCharset();
-
-	/**
-	 * Sets the character set used by this packet.
-	 * @param charset used to encode message addresses and string arguments.
-	 */
-	void setCharset(Charset charset);
-
-	/**
-	 * Return the OSC byte stream for this packet.
-	 * @return byte[]
-	 */
-	byte[] getByteArray();
 }

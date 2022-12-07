@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.dependency "React"
-  s.dependency 'SwiftOSC', '~> 1.3'
+  s.dependency 'SwiftOSC', '~> 1.4'
   s.swift_version = '4.2'
 
   # ...

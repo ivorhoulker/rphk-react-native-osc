@@ -1,18 +1,13 @@
-/*
- * Copyright (C) 2003-2014, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- *
- * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
- */
+// SPDX-FileCopyrightText: 2003-2017 C. Ramakrishnan / Illposed Software
+// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+//
+// SPDX-License-Identifier: BSD-3-Clause
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import com.illposed.osc.argument.OSCTimeTag64;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,30 +15,18 @@ import java.util.List;
  * A bundle represents a collection of OSC packets
  * (either messages or other bundles)
  * and has a time-tag which can be used by a scheduler to execute
- * a bundle in the future,
- * instead of immediately.
+ * a bundle in the future, instead of immediately.
  * {@link OSCMessage}s are executed immediately.
  *
  * Bundles should be used if you want to send multiple messages to be executed
- * atomically together, or you want to schedule one or more messages to be
- * executed in the future.
- *
- * @author Chandrasekhar Ramakrishnan
+ * as soon as possible and in immediate succession to each other,
+ * or you want to schedule one or more messages to be executed in the future.
  */
-public class OSCBundle extends AbstractOSCPacket {
+public class OSCBundle implements OSCPacket {
 
-	/**
-	 * 2208988800 seconds -- includes 17 leap years
-	 */
-	public static final long SECONDS_FROM_1900_TO_1970 = 2208988800L;
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * The Java representation of an OSC timestamp with the semantics of
-	 * "immediately".
-	 */
-	public static final Date TIMESTAMP_IMMEDIATE = new Date(0);
-
-	private Date timestamp;
+	private OSCTimeTag64 timestamp;
 	private List<OSCPacket> packets;
 
 	/**
@@ -51,14 +34,14 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * You can add packets to the bundle with addPacket()
 	 */
 	public OSCBundle() {
-		this(TIMESTAMP_IMMEDIATE);
+		this(OSCTimeTag64.IMMEDIATE);
 	}
 
 	/**
 	 * Create an OSCBundle with the specified timestamp.
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final Date timestamp) {
+	public OSCBundle(final OSCTimeTag64 timestamp) {
 		this(null, timestamp);
 	}
 
@@ -67,8 +50,8 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * with a timestamp of now.
 	 * @param packets array of OSCPackets to initialize this object with
 	 */
-	public OSCBundle(final Collection<OSCPacket> packets) {
-		this(packets, TIMESTAMP_IMMEDIATE);
+	public OSCBundle(final List<OSCPacket> packets) {
+		this(packets, OSCTimeTag64.IMMEDIATE);
 	}
 
 	/**
@@ -76,34 +59,44 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @param packets the packets that make up the bundle
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final Collection<OSCPacket> packets, final Date timestamp) {
+	public OSCBundle(final List<OSCPacket> packets, final OSCTimeTag64 timestamp) {
 
 		if (null == packets) {
-			this.packets = new LinkedList<OSCPacket>();
+			this.packets = new LinkedList<>();
 		} else {
-			this.packets = new ArrayList<OSCPacket>(packets);
+			this.packets = new ArrayList<>(packets);
 		}
-		this.timestamp = clone(timestamp);
+		checkNonNullTimestamp(timestamp);
+		this.timestamp = timestamp;
 	}
 
-	private static Date clone(final Date toBeCloned) {
-		return (toBeCloned == null) ? toBeCloned : (Date) toBeCloned.clone();
-	}
+	private static void checkNonNullTimestamp(final OSCTimeTag64 timestamp) {
 
-	/**
-	 * Return the time the bundle will execute.
-	 * @return a Date
-	 */
-	public Date getTimestamp() {
-		return clone(timestamp);
+		if (timestamp == null) {
+			throw new IllegalArgumentException("Bundle time-stamp may not be null; you may want to "
+					+ "use OSCTimeStamp.IMMEDIATE.");
+		}
 	}
 
 	/**
-	 * Set the time the bundle will execute.
-	 * @param timestamp Date
+	 * Returns the time the bundle will execute.
+	 * @return will never be {@code null}
 	 */
-	public void setTimestamp(final Date timestamp) {
-		this.timestamp = clone(timestamp);
+	public OSCTimeTag64 getTimestamp() {
+		return timestamp;
+	}
+
+	// Public API
+	/**
+	 * Sets the time the bundle will execute.
+	 * @param timestamp when the bundle should execute, can not be {@code null},
+	 *   but {@code OSCTimeTag64.IMMEDIATE}
+	 */
+	@SuppressWarnings("WeakerAccess")
+	public void setTimestamp(final OSCTimeTag64 timestamp) {
+
+		checkNonNullTimestamp(timestamp);
+		this.timestamp = timestamp;
 	}
 
 	/**
@@ -112,7 +105,6 @@ public class OSCBundle extends AbstractOSCPacket {
 	 */
 	public void addPacket(final OSCPacket packet) {
 		packets.add(packet);
-		contentChanged();
 	}
 
 	/**
@@ -121,40 +113,5 @@ public class OSCBundle extends AbstractOSCPacket {
 	 */
 	public List<OSCPacket> getPackets() {
 		return Collections.unmodifiableList(packets);
-	}
-
-	/**
-	 * Convert the time-tag (a Java Date) into the OSC byte stream.
-	 * Used Internally.
-	 * @param stream where to write the time-tag to
-	 */
-	private void computeTimeTagByteArray(final OSCJavaToByteArrayConverter stream) {
-		if ((null == timestamp) || (timestamp.equals(TIMESTAMP_IMMEDIATE))) {
-			stream.write((int) 0);
-			stream.write((int) 1);
-			return;
-		}
-
-		final long millisecs = timestamp.getTime();
-		final long secsSince1970 = (long) (millisecs / 1000);
-		final long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
-
-		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
-		final long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
-
-		stream.write((int) secs);
-		stream.write((int) fraction);
-	}
-
-	@Override
-	protected byte[] computeByteArray(final OSCJavaToByteArrayConverter stream) {
-		stream.write("#bundle");
-		computeTimeTagByteArray(stream);
-		byte[] packetBytes;
-		for (final OSCPacket pkg : packets) {
-			packetBytes = pkg.getByteArray();
-			stream.write(packetBytes);
-		}
-		return stream.toByteArray();
 	}
 }
