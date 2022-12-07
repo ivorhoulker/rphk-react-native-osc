@@ -1,11 +1,16 @@
 {
-  "name": "react-native-osc",
+  "name": "@rphk/react-native-osc",
   "title": "Open Sound Control for React Native",
-  "version": "0.0.3",
+  "version": "0.0.9",
   "description": "Open Sound Control for React Native (iOS & Android).",
-  "main": "index.js",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepack": "bob build"
   },
   "repository": {
     "type": "git",
@@ -34,6 +39,24 @@
   },
   "devDependencies": {
     "react": "^16.9.0",
-    "react-native": "^0.61.5"
+    "react-native": "^0.61.5",
+    "@types/react": "~17.0.21",
+    "@types/react-native": "0.70.0",
+    "typescript": "^4.5.2",
+    "react-native-builder-bob": "^0.20.3"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
   }
 }
