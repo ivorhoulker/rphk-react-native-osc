@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/ivorhoulker/rphk-react-native-osc"
   s.license      = "MIT"
   # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.authors      = { "Luis Fernando García Pérez" => "contacto@ivorhoulker.rphk-com" }
+  s.authors      = { "Ivor Houlker" => "info@rooftopproductions.hk" }
   s.platforms    = { :ios => "9.0" }
   s.source       = { :git => "https://github.com/ivorhoulker/rphk-react-native-osc.git", :tag => "#{s.version}" }
 
