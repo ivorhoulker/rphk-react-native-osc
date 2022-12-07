@@ -27,23 +27,23 @@ public class AndroidPackageModule extends ReactContextBaseJavaModule {
   // See https://reactnative.dev/docs/native-modules-android
   @ReactMethod
   public void createClient(String a, int b) {
-    return a;
+    
   }
   @ReactMethod
   public void createServer(int a) {
-    return a;
+    
   }
   @ReactMethod
   public void sendMessage(String a, int b) {
-    return a;
+  
   }
   @ReactMethod
   public void addListener(String a) {
-    return a;
+  
   }
   @ReactMethod
   public void removeListeners(int b) {
-    return b;
+
   }
 
 };
