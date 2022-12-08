@@ -1,69 +1,67 @@
-# react-native-osc 0.0.3
+# Forked from [react-native-osc](https://github.com/luiscript/react-native-osc)
 
-Open Sound Control support for sending and receiving OSC messages in React Native (iOS & Android).
+Open Sound Control support for sending and receiving OSC messages in React Native. This fork is iOS ONLY! The java package for android is replaced with empty methods.
 
-On the native side: 
-[JavaOSC](https://github.com/hoijui/JavaOSC/) for Android & 
-[SwiftOSC](https://github.com/ExistentialAudio/SwiftOSC) for iOS.
+This fork adds support for typescript.
+
+This uses [SwiftOSC](https://github.com/ExistentialAudio/SwiftOSC) for iOS.
 
 ## Getting started:
 
 `$ npm install react-native-osc --save`
 
-In ios/Podfile add: `use_frameworks!` 
+In ios/Podfile add: `use_frameworks!`
 
 `$ cd ios && pod install`
 
 ## Usage
 
 ### Send OSC message (OSC client):
+
 ```javascript
 import osc from 'react-native-osc';
 
 var portOut = 9090;
 
 //OSC server IP address like "192.168.1.80" or "localhost"
-var address = "localhost"; 
+var address = 'localhost';
 
 //create the client only once in componentDidMount
 osc.createClient(address, portOut);
 
 //now you can send OSC messages like this (only after creating a client)
-osc.sendMessage("/address/", [1.0, 0.5]);
+osc.sendMessage('/address/', [1.0, 0.5]);
 
 //send any combination of integers, floats, bool & string values:
-osc.sendMessage("/address/", ["string value", 1, false, 0.5]);
+osc.sendMessage('/address/', ['string value', 1, false, 0.5]);
 ```
 
 ### Receive OSC messages (OSC server):
+
 ```javascript
-import {
-  NativeEventEmitter
-} from 'react-native';
+import { NativeEventEmitter } from 'react-native';
 
 import osc from 'react-native-osc';
 
-//create an event emiter sending the native osc module as parameter 
+//create an event emiter sending the native osc module as parameter
 const eventEmitter = new NativeEventEmitter(osc);
 
 //subscribe to GotMessage event to receive OSC messages
 eventEmitter.addListener('GotMessage', (oscMessage) => {
-  console.log("message: ", oscMessage);
+  console.log('message: ', oscMessage);
 });
 
 var portIn = 9999;
 
-//iOS can listen to specific "/adress/", leave it emtpy to listen to all 
-var addressToListen = "";
+//iOS can listen to specific "/adress/", leave it emtpy to listen to all
+var addressToListen = '';
 
 // to start listening to OSC messages (iOS):
-osc.createServer(addressToListen, portIn);
-
-// Android:
-osc.createServer(portIn) 
+osc.createServer(portIn);
 
 //to receive OSC messages your client should be addressing your device IP address
 ```
+
 ## Supported types:
 
 i Integer: two’s complement int32.
@@ -86,11 +84,7 @@ F False.
 
 Xcode:11.3.1 - iOS_SDK: 13 - RN: 0.61.5
 
-## Projects using this module:
-
-[MIDITROL](https://miditrol.com)
-
-## License
+## License (of forked repo)
 
 The MIT License (MIT)
 
@@ -114,36 +108,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-## JavaOSC
-
-Copyright (c) 2002-2014, Chandrasekhar Ramakrishnan / Illposed Software
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the {organization} nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## SwiftOSC
 

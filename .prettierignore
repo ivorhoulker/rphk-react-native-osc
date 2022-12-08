@@ -1,0 +1,18 @@
+# Ignore artifacts:
+public
+lib
+build
+dist
+node_modules
+.yarn
+.turbo
+.next
+.expo
+android
+ios
+.husky
+examples
+
+.expo-shared
+.changeset
+.vscode
