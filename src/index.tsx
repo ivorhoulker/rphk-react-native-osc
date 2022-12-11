@@ -35,9 +35,10 @@ interface OscModule extends NativeModule {
    */
   createServer: (serverPort: number) => void;
   /** Send an osc message, which looks like: "/step/on/it", [1, 2, 3]
-   * @param message - with an address and data
+   * @param oscAddress - like /command etc., should use slashes
+   * @param message - array of floats, ints, or booleans
    */
-  sendMessage: (message: OSCMessage) => void;
+  sendMessage: (oscAddress: string, message: Array<number | boolean>) => void;
 }
 
 export default Osc as OscModule;
